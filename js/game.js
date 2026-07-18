@@ -36,7 +36,8 @@
   let groundScreenY = 0;
 
   let state = "menu"; // menu | select | playing | dying | paused | complete
-  let levelIndex = 0;
+  // Default to Flash Rush (~2 min board with coins/portals)
+  let levelIndex = Math.max(0, LEVELS.findIndex((l) => l.id === "flash-rush"));
   let attempt = 1;
   let holding = false;
   let bestMap = loadBest();
