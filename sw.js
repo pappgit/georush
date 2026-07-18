@@ -1,11 +1,11 @@
 /* GeoRush service worker — network-first so updates show up on mobile */
-const CACHE_NAME = "georush-v2";
+const CACHE_NAME = "georush-v3";
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css?v=2",
-  "./js/game.js?v=2",
-  "./js/levels.js?v=2",
+  "./css/style.css?v=3",
+  "./js/game.js?v=3",
+  "./js/levels.js?v=3",
 ];
 
 self.addEventListener("install", (event) => {

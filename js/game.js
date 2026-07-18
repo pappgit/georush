@@ -40,6 +40,9 @@
   let levelIndex = Math.max(0, LEVELS.findIndex((l) => l.id === "flash-rush"));
   let attempt = 1;
   let holding = false;
+  let wantJump = false;
+  let jumpLocked = false;
+  let activePointers = new Set();
   let bestMap = loadBest();
 
   let player = null;
@@ -208,6 +211,8 @@
     buildMainRun();
     coins = 0;
     timeAlive = 0;
+    wantJump = false;
+    jumpLocked = false;
     player = {
       x: 2,
       y: GROUND_Y,
@@ -287,13 +292,17 @@
     return { x: sx, y: sy };
   }
 
-  function jump() {
-    if (state !== "playing" || !player || !player.alive) return;
-    if (!player.onGround) return;
+  /** One jump impulse per ground contact — mashing cannot stack height. */
+  function applyJump() {
+    if (state !== "playing" || !player || !player.alive) return false;
+    if (!player.onGround || jumpLocked) return false;
     player.vy = JUMP_VEL;
     player.onGround = false;
+    jumpLocked = true;
+    wantJump = false;
     player.targetRot += Math.PI / 2;
     spawnDust(player.x, player.y, 6);
+    return true;
   }
 
   function spawnDust(x, y, n) {
@@ -520,8 +529,6 @@
     timeAlive += dt;
     player.vx = run.speed;
 
-    if (holding && player.onGround) jump();
-
     player.vy -= GRAVITY * dt;
     player.x += player.vx * dt;
     const prevY = player.y;
@@ -531,16 +538,21 @@
     if (floor != null && player.vy <= 0) {
       player.y = floor;
       player.vy = 0;
-      if (!player.onGround) {
-        player.onGround = true;
+      const landed = !player.onGround;
+      player.onGround = true;
+      jumpLocked = false;
+      if (landed) {
         player.rot = Math.round(player.targetRot / (Math.PI / 2)) * (Math.PI / 2);
         player.targetRot = player.rot;
         spawnDust(player.x + player.size / 2, player.y, 4);
-      } else {
-        player.onGround = true;
       }
     } else {
       player.onGround = false;
+    }
+
+    // Jump after ground resolve so spam/taps never stack impulses in-air
+    if (player.onGround && (wantJump || holding)) {
+      applyJump();
     }
 
     if (!player.onGround) {
@@ -1062,12 +1074,15 @@
 
   function onDown(e) {
     if (e && e.cancelable) e.preventDefault();
+    if (e && e.pointerId != null) activePointers.add(e.pointerId);
     holding = true;
-    if (state === "playing") jump();
+    wantJump = true;
   }
 
-  function onUp() {
-    holding = false;
+  function onUp(e) {
+    if (e && e.pointerId != null) activePointers.delete(e.pointerId);
+    holding = activePointers.size > 0;
+    // Keep wantJump so a tap in-air still buffers one jump for landing
   }
 
   // UI wiring
@@ -1141,11 +1156,17 @@
   canvas.addEventListener("pointerdown", onDown, { passive: false });
   window.addEventListener("pointerup", onUp);
   window.addEventListener("pointercancel", onUp);
+  window.addEventListener("blur", () => {
+    activePointers.clear();
+    holding = false;
+    wantJump = false;
+  });
 
   window.addEventListener("keydown", (e) => {
     if (e.code === "Space" || e.code === "ArrowUp") {
       e.preventDefault();
-      if (!holding) onDown();
+      if (e.repeat) return;
+      if (!holding) onDown({ pointerId: "key-" + e.code });
     }
     if (e.code === "Escape" && state === "playing") {
       state = "paused";
@@ -1154,7 +1175,9 @@
     }
   });
   window.addEventListener("keyup", (e) => {
-    if (e.code === "Space" || e.code === "ArrowUp") onUp();
+    if (e.code === "Space" || e.code === "ArrowUp") {
+      onUp({ pointerId: "key-" + e.code });
+    }
   });
 
   // swipe on level select

@@ -12,14 +12,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Russo+One&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=2" />
+  <link rel="stylesheet" href="css/style.css?v=3" />
 </head>
 <body>
   <div id="rotate-hint">
     <div class="rotate-card">
       <div class="phone-icon" aria-hidden="true"></div>
       <p>Roter telefonen<br /><strong>horisontalt</strong></p>
-      <p class="build-tag">v2 · coins · portaler</p>
+      <p class="build-tag">v3 · coins · portaler</p>
     </div>
   </div>
 
@@ -45,7 +45,7 @@
       <div class="menu-bg"></div>
       <h1 class="logo">GEORUSH</h1>
       <p class="tagline">Trykk for å hoppe · Samle coins · Portaler</p>
-      <p class="build-tag">v2 · FLASH RUSH ~2 min</p>
+      <p class="build-tag">v3 · FLASH RUSH ~2 min</p>
       <button id="btn-play" class="btn primary" type="button">SPILL</button>
     </div>
 
@@ -88,13 +88,13 @@
     </div>
   </div>
 
-  <script src="js/levels.js?v=2"></script>
-  <script src="js/game.js?v=2"></script>
+  <script src="js/levels.js?v=3"></script>
+  <script src="js/game.js?v=3"></script>
   <script>
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
-          .register("./sw.js?v=2")
+          .register("./sw.js?v=3")
           .then((reg) => reg.update())
           .catch(() => {});
       });
