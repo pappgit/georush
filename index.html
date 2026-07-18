@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="theme-color" content="#1a0a2e" />
+  <title>GeoRush — Geometry Dash-stil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Russo+One&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="rotate-hint">
+    <div class="rotate-card">
+      <div class="phone-icon" aria-hidden="true"></div>
+      <p>Roter telefonen<br /><strong>horisontalt</strong></p>
+    </div>
+  </div>
+
+  <div id="app">
+    <canvas id="game"></canvas>
+
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <span id="attempt-label">ATTEMPT 1</span>
+        <div class="progress-wrap">
+          <div id="progress-fill"></div>
+        </div>
+        <span id="progress-pct">0%</span>
+        <button id="btn-pause" type="button" aria-label="Pause">❚❚</button>
+      </div>
+    </div>
+
+    <div id="menu" class="screen">
+      <div class="menu-bg"></div>
+      <h1 class="logo">GEORUSH</h1>
+      <p class="tagline">Trykk for å hoppe · Unngå spikes</p>
+      <button id="btn-play" class="btn primary" type="button">SPILL</button>
+    </div>
+
+    <div id="level-select" class="screen hidden">
+      <button id="btn-back-menu" class="btn ghost corner" type="button">←</button>
+      <div class="level-stage">
+        <button id="btn-prev" class="nav-arrow" type="button" aria-label="Forrige">◀</button>
+        <div id="level-card">
+          <div class="diff-row">
+            <span id="diff-icon" class="diff-icon"></span>
+            <h2 id="level-name">FIRST STEPS</h2>
+            <span id="level-stars" class="stars">★</span>
+          </div>
+          <div class="best-row">
+            <span>BEST</span>
+            <div class="mini-bar"><div id="best-fill"></div></div>
+            <span id="best-pct">0%</span>
+          </div>
+          <button id="btn-start" class="btn primary" type="button">START</button>
+        </div>
+        <button id="btn-next" class="nav-arrow" type="button" aria-label="Neste">▶</button>
+      </div>
+      <div id="level-dots" class="dots"></div>
+    </div>
+
+    <div id="pause" class="screen overlay hidden">
+      <h2>PAUSE</h2>
+      <button id="btn-resume" class="btn primary" type="button">FORTSETT</button>
+      <button id="btn-restart" class="btn" type="button">RESTART</button>
+      <button id="btn-quit" class="btn ghost" type="button">MENY</button>
+    </div>
+
+    <div id="complete" class="screen overlay hidden">
+      <h2 class="win-title">FULLFØRT!</h2>
+      <p id="complete-pct" class="win-sub">100%</p>
+      <button id="btn-next-level" class="btn primary" type="button">NESTE BRETT</button>
+      <button id="btn-replay" class="btn" type="button">SPILL IGJEN</button>
+      <button id="btn-to-select" class="btn ghost" type="button">BRETT</button>
+    </div>
+  </div>
+
+  <script src="js/levels.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
