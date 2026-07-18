@@ -100,11 +100,25 @@ html, body {
 }
 
 .tagline {
-  margin: 10px 0 28px;
+  margin: 10px 0 10px;
   opacity: 0.75;
   font-size: clamp(0.7rem, 2.5vw, 0.95rem);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.build-tag {
+  margin: 0 0 22px;
+  opacity: 0.55;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #ffd166;
+}
+
+#rotate-hint .build-tag {
+  margin-top: 16px;
+  margin-bottom: 0;
 }
 
 .btn {

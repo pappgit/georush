@@ -1,16 +1,19 @@
-/* GeoRush service worker — caches app shell for faster loads / offline play */
-const CACHE_NAME = "georush-v1";
+/* GeoRush service worker — network-first so updates show up on mobile */
+const CACHE_NAME = "georush-v2";
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/style.css",
-  "./js/game.js",
-  "./js/levels.js",
+  "./css/style.css?v=2",
+  "./js/game.js?v=2",
+  "./js/levels.js?v=2",
 ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)).then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -31,20 +34,36 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  event.respondWith(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      const cached = await cache.match(event.request);
-      const network = fetch(event.request)
+  // HTML / navigations: always try network first so new deploys win
+  const isDoc =
+    event.request.mode === "navigate" ||
+    (event.request.headers.get("accept") || "").includes("text/html");
+
+  if (isDoc) {
+    event.respondWith(
+      fetch(event.request)
         .then((response) => {
           if (response && response.ok) {
-            cache.put(event.request, response.clone());
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
           }
           return response;
         })
-        .catch(() => cached);
+        .catch(() => caches.match(event.request).then((c) => c || caches.match("./index.html")))
+    );
+    return;
+  }
 
-      // Stale-while-revalidate: serve cache immediately when present
-      return cached || network;
-    })
+  // Other assets: network first, fall back to cache
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
