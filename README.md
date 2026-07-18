@@ -27,6 +27,8 @@ Et enkelt Geometry Dash-inspirert spill for mobil (horisontalt).
 python3 -m http.server 8080
 ```
 
+Service worker (`sw.js`) cacher spillfilene for raskere lasting og offline. Krever HTTP(S), ikke `file://`.
+
 ## GitHub Pages
 
 Publiseres automatisk fra `main`-branchen.

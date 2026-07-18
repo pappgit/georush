@@ -210,6 +210,13 @@
       { x: Math.floor(length * 0.75), name: "JACKPOT", seed: 9 },
     ];
     for (const p of portalSpots) {
+      // Clear overlapping hazards so the portal entrance is readable
+      for (let i = objects.length - 1; i >= 0; i--) {
+        const o = objects[i];
+        if (o.type === "finish") continue;
+        const ow = o.w || (o.type === "saw" ? (o.r || 0.7) * 2 : 1);
+        if (o.x + ow > p.x - 3 && o.x < p.x + 4) objects.splice(i, 1);
+      }
       objects.push({ type: "coin", x: p.x - 2.2, y: 1.3 });
       objects.push({ type: "coin", x: p.x - 1.1, y: 1.7 });
       objects.push({
